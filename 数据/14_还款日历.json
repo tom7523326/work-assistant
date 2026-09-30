@@ -1,0 +1,37 @@
+{
+  "_说明": "示例还款日历（脱敏假数据）。金额与账号均为虚构。",
+  "_数据基准日": "2026-09-30",
+  "_最后更新": "2026-09-30",
+  "_状态字典": {
+    "pending": "未到期",
+    "due_soon": "3天内到期",
+    "overdue": "已逾期",
+    "paid": "已还",
+    "skipped": "本期跳过"
+  },
+  "还款": [
+    {
+      "id": "R001",
+      "title": "示例房贷",
+      "bank": "示例银行",
+      "amount": 3200,
+      "due_date": "2026-10-05",
+      "type": "automatic",
+      "status": "pending",
+      "category": "房贷",
+      "next_action": "到期前确认账户余额"
+    },
+    {
+      "id": "R002",
+      "title": "示例信用卡",
+      "bank": "示例银行",
+      "amount": 1500,
+      "due_date": "2026-10-12",
+      "type": "manual",
+      "status": "pending",
+      "category": "信用卡",
+      "next_action": "出账后核对"
+    }
+  ],
+  "_本金到期_关注": []
+}

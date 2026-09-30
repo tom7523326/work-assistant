@@ -1,0 +1,13 @@
+.DS_Store
+__pycache__/
+*.pyc
+.history/
+数据/.history/
+数据/_notify.log
+数据/_menubar.log
+.tmp.*/
+.workbuddy/
+.codebuddy/
+*.app/
+.env
+.env.*

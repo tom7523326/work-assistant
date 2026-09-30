@@ -1,0 +1,114 @@
+{
+  "_说明": "示例待办数据（脱敏）。复制本仓库后可按自己的生活改写。",
+  "_数据基准日": "2026-09-30",
+  "_最后更新": "2026-09-30",
+  "_使用方式": "任务看板.py / 菜单栏.py 读取本文件",
+  "_类型字典": {
+    "task": "一次性任务（默认）",
+    "habit": "习惯打卡",
+    "review": "周期性检查"
+  },
+  "_状态字典": {
+    "todo": "待办",
+    "doing": "进行中",
+    "blocked": "卡住",
+    "done": "已完成",
+    "cancelled": "取消"
+  },
+  "_today_focus": [
+    "T001",
+    "T002"
+  ],
+  "_today_focus_date": "2026-09-30",
+  "_领域字典": {
+    "family": "家庭",
+    "work": "工作",
+    "finance": "财务",
+    "life": "生活",
+    "growth": "成长"
+  },
+  "_优先级字典": {
+    "P0": "今天必须动",
+    "P1": "本周必须动",
+    "P2": "本月动",
+    "P3": "有空动"
+  },
+  "待办": [
+    {
+      "id": "T001",
+      "title": "写本周工作周报",
+      "domain": "work",
+      "type": "task",
+      "priority": "P0",
+      "status": "todo",
+      "created": "2026-09-28",
+      "deadline": "2026-09-30",
+      "next_action_5min": "打开文档列 3 条本周结果",
+      "notes": "示例任务",
+      "tags": [
+        "工作"
+      ],
+      "sub_tasks": [
+        {
+          "title": "列成果",
+          "done": false
+        },
+        {
+          "title": "列风险",
+          "done": false
+        }
+      ]
+    },
+    {
+      "id": "T002",
+      "title": "学习 AI 工具 30 分钟",
+      "domain": "growth",
+      "type": "task",
+      "priority": "P1",
+      "status": "todo",
+      "created": "2026-09-28",
+      "deadline": "2026-09-30",
+      "next_action_5min": "打开一篇教程开始计时",
+      "notes": "示例任务",
+      "tags": [
+        "成长"
+      ]
+    },
+    {
+      "id": "T003",
+      "title": "减重打卡",
+      "domain": "life",
+      "type": "habit",
+      "priority": "P2",
+      "status": "doing",
+      "created": "2026-09-01",
+      "deadline": "2026-12-30",
+      "next_action_5min": "记录今日体重",
+      "notes": "示例习惯任务",
+      "tags": [
+        "健康"
+      ],
+      "habit_unit": "kg",
+      "habit_target": 70,
+      "habit_direction": "down"
+    },
+    {
+      "id": "T004",
+      "title": "已完成示例：整理桌面",
+      "domain": "life",
+      "type": "task",
+      "priority": "P3",
+      "status": "done",
+      "created": "2026-09-20",
+      "deadline": "2026-09-22",
+      "next_action_5min": "",
+      "notes": "",
+      "tags": [],
+      "_completed_at": "2026-09-22",
+      "_完成备注": "示例"
+    }
+  ],
+  "_已完成": [],
+  "_占位_待用户补充": [],
+  "_重构记录": []
+}
