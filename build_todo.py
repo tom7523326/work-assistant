@@ -9,6 +9,7 @@
 import json
 from pathlib import Path
 from datetime import datetime, date, timedelta
+from zoneinfo import ZoneInfo
 
 ROOT = Path(__file__).resolve().parent
 data = json.loads((ROOT / '数据' / '12_待办.json').read_text(encoding='utf-8'))
@@ -20,6 +21,13 @@ DOMAIN_META = {
     "life":    {"emoji": "🌱", "name": "生活", "color": "#34d399", "bg": "rgba(52,211,153,0.10)"},
     "growth":  {"emoji": "📚", "name": "成长", "color": "#fb923c", "bg": "rgba(251,146,60,0.10)"},
 }
+# 三大分区：工作（含成长）/ 生活（含家庭）/ 财务 —— 改归属只改这里
+GROUP_OF = {"work": "work", "growth": "work", "family": "life", "life": "life", "finance": "finance"}
+GROUP_META = {
+    "work":    {"label": "💼 工作", "color": "#60a5fa"},
+    "life":    {"label": "🏡 生活", "color": "#34d399"},
+    "finance": {"label": "💰 财务", "color": "#fbbf24"},
+}
 PRIORITY_META = {
     "P0": {"label": "P0 紧急", "color": "#ef4444"},
     "P1": {"label": "P1 主线", "color": "#f59e0b"},
@@ -27,7 +35,8 @@ PRIORITY_META = {
     "P3": {"label": "P3 长尾", "color": "#10b981"},
 }
 
-TODAY = date.today()
+SHANGHAI_NOW = datetime.now(ZoneInfo("Asia/Shanghai"))
+TODAY = SHANGHAI_NOW.date()
 WEEKDAY_CN = ["周一","周二","周三","周四","周五","周六","周日"]
 
 
@@ -184,7 +193,7 @@ def render_card(t, show_full=True):
         action_html = f'<div class="action"><span class="bolt">⚡</span><span>{t["next_action_5min"]}</span></div>'
     
     return f'''
-<div class="card{done_cls}" style="--accent:{domain['color']};--accent-bg:{domain['bg']}">
+<div class="card{done_cls}" data-group="{GROUP_OF.get(t.get('domain', ''), 'work')}" style="--accent:{domain['color']};--accent-bg:{domain['bg']}">
   <div class="card-head">
     <span class="prio" style="background:{prio['color']}22;color:{prio['color']}">{t.get('priority','')}</span>
     <span class="domain">{domain['emoji']} {domain['name']}</span>
@@ -228,6 +237,52 @@ view_today_html += render_section("明天预备", "明日待动", buckets["tomor
 view_today_html += render_section("本周内", "未来 7 天", buckets["thisweek"], "📆", True, "#fbbf24")
 view_today_html += render_section("长期 / 持续", "节奏推进", buckets["later"], "🗄️", True, "#10b981")
 
+# —— 按类别视图：工作 / 生活 / 财务（成长归工作，家庭归生活）——
+GROUPS = [
+    ("work",    "💼 工作", "工作 + 职业成长（含抖音、AI 学习）", "#60a5fa"),
+    ("life",    "🏡 生活", "家庭 + 个人生活（孩子、健康、出行）", "#34d399"),
+    ("finance", "💰 财务", "报销、还款、理财", "#fbbf24"),
+]
+BUCKET_ORDER = {"overdue": 0, "today": 1, "tomorrow": 2, "thisweek": 3, "later": 4}
+PRIO_ORDER = {"P0": 0, "P1": 1, "P2": 2, "P3": 3}
+
+def _sort_key(t):
+    return (BUCKET_ORDER.get(bucket_of(t), 9), PRIO_ORDER.get(t.get("priority", "P2"), 9),
+            t.get("deadline", "9999"))
+
+view_group_html = ""
+group_stats = []
+for gkey, gname, gsub, gcolor in GROUPS:
+    items = sorted([t for t in all_active if GROUP_OF.get(t.get("domain", ""), "work") == gkey], key=_sort_key)
+    n_over = sum(1 for t in items if bucket_of(t) == "overdue")
+    n_today = sum(1 for t in items if bucket_of(t) == "today")
+    group_stats.append((gkey, gname, len(items), n_over, n_today))
+    parts = [gsub]
+    if n_today:
+        parts.append(f"今天 {n_today}")
+    if n_over:
+        parts.append(f"已过期 {n_over}")
+    view_group_html += render_section(gname, " · ".join(parts), items, "", True, gcolor)
+    if not items:
+        view_group_html += f'<div class="section-empty" data-group="{gkey}">{gname}：没有未完成事项 🎉</div>'
+
+group_stat_html = "".join(
+    f'<div class="stat-box" data-group="{gkey}"><div class="v">{n}</div><div class="l">{name}'
+    f'{f" · 今天 {td}" if td else ""}{f" · 过期 {ov}" if ov else ""}</div></div>'
+    for gkey, name, n, ov, td in group_stats
+)
+
+# 筛选条上的计数（仅未完成）
+filter_counts = {gkey: n for gkey, _, n, _, _ in group_stats}
+filter_chips_html = (
+    f'<button class="chip active" data-filter="all" onclick="setFilter(\'all\')">全部 <b>{total_active}</b></button>'
+    + "".join(
+        f'<button class="chip" data-filter="{k}" onclick="setFilter(\'{k}\')" '
+        f'style="--chip:{GROUP_META[k]["color"]}">{GROUP_META[k]["label"]} <b>{filter_counts.get(k, 0)}</b></button>'
+        for k in ("work", "life", "finance")
+    )
+)
+
 view_active_html = ""
 for t in all_active:
     view_active_html += render_card(t)
@@ -249,7 +304,7 @@ for t in buckets["done"]:
     view_all_html += render_card(t)
 
 
-now = datetime.now().strftime("%H:%M")
+now = SHANGHAI_NOW.strftime("%H:%M")
 date_str = TODAY.strftime("%Y-%m-%d")
 weekday = WEEKDAY_CN[TODAY.weekday()]
 
@@ -352,6 +407,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","SF Pro Text","H
 .done-memo{font-size:12px;color:var(--text2);margin-top:4px;}
 
 .card-id{position:absolute;top:8px;right:8px;font-size:9px;color:var(--text3);font-family:ui-monospace,monospace;opacity:0.5;}
+.filterbar{display:flex;align-items:center;gap:8px;margin:-6px 0 18px;flex-wrap:wrap;}
+.filterbar .lab{font-size:11px;color:var(--text3);letter-spacing:1px;margin-right:2px;}
+.chip{padding:6px 14px;font-size:13px;border-radius:999px;cursor:pointer;font-family:inherit;
+      background:var(--card);color:var(--text2);border:1px solid var(--border2);transition:all .15s;}
+.chip b{font-weight:700;margin-left:4px;font-variant-numeric:tabular-nums;}
+.chip:hover{color:var(--text);border-color:var(--chip,var(--blue));}
+.chip.active{color:#0a0c10;background:var(--chip,var(--text));border-color:var(--chip,var(--text));font-weight:600;}
+.chip.active b{color:#0a0c10;}
+.hidden-by-filter{display:none !important;}
+.section-empty{color:var(--text3);font-size:13px;padding:6px 4px 14px;}
+.group-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;}
 .all-h{font-size:13px;color:var(--text3);letter-spacing:1px;margin-bottom:12px;text-transform:uppercase;}
 
 .footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);
@@ -372,6 +438,28 @@ function switchView(name){
   document.querySelector('.tab[data-view="'+name+'"]').classList.add('active');
   document.getElementById('view-'+name).classList.add('active');
 }
+
+function setFilter(f){
+  document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('active', c.dataset.filter===f));
+  document.querySelectorAll('.card, .stat-box[data-group], .section-empty').forEach(el=>{
+    const g = el.dataset.group;
+    el.classList.toggle('hidden-by-filter', f!=='all' && g && g!==f);
+  });
+  document.querySelectorAll('details.section').forEach(sec=>{
+    const cards = sec.querySelectorAll('.card');
+    const shown = Array.from(cards).filter(c=>!c.classList.contains('hidden-by-filter')).length;
+    const cnt = sec.querySelector('.section-count');
+    if(cnt) cnt.textContent = shown;
+    sec.classList.toggle('hidden-by-filter', shown===0);
+  });
+  try{ localStorage.setItem('todoFilter', f); }catch(e){}
+}
+(function(){
+  let f='all';
+  try{ f = localStorage.getItem('todoFilter') || 'all'; }catch(e){}
+  if(!document.querySelector('.chip[data-filter="'+f+'"]')) f='all';
+  setFilter(f);
+})();
 """
 
 html = f"""<!doctype html>
@@ -396,14 +484,25 @@ html = f"""<!doctype html>
   <div class="stat-box done"><div class="v">{this_week_done}</div><div class="l">✅ 7 天内完成</div></div>
 </div>
 
+<div class="filterbar">
+  <span class="lab">分区筛选</span>
+  {filter_chips_html}
+</div>
+
 <div class="tabs">
-  <button class="tab active" data-view="today" onclick="switchView('today')">📅 时间分桶</button>
+  <button class="tab active" data-view="group" onclick="switchView('group')">🗂 工作 / 生活 / 财务</button>
+  <button class="tab" data-view="today" onclick="switchView('today')">📅 时间分桶</button>
   <button class="tab" data-view="active" onclick="switchView('active')">⏳ 仅待办（{total_active}）</button>
   <button class="tab" data-view="done" onclick="switchView('done')">✅ 已完成（{total_done}）</button>
   <button class="tab" data-view="all" onclick="switchView('all')">📊 全部</button>
 </div>
 
-<div id="view-today" class="view active">
+<div id="view-group" class="view active">
+  <div class="group-stats">{group_stat_html}</div>
+  {view_group_html}
+</div>
+
+<div id="view-today" class="view">
   {view_today_html}
 </div>
 
@@ -433,4 +532,6 @@ html = f"""<!doctype html>
 (ROOT / '今日待办.html').write_text(html, encoding='utf-8')
 print(f"✅ 看板已重建（v3）")
 print(f"  活跃 {total_active} | 已完成 {total_done} | 7 天完成 {this_week_done}")
-print(f"  4 个视图：时间分桶 / 仅待办 / 已完成 / 全部")
+print(f"  5 个视图：工作/生活/财务 / 时间分桶 / 仅待办 / 已完成 / 全部")
+for gkey, name, n, ov, td in group_stats:
+    print(f"  {name}: {n} 条（今天 {td} · 已过期 {ov}）")
