@@ -41,8 +41,9 @@ work-assistant/
 ├── launchd/                 # LaunchAgent 模板（安装时写实路径）
 ├── 数据/                    # 示例 JSON（请换成你自己的）
 ├── _记忆/                   # SOUL / MEMORY / today 模板
-├── AGENTS.md                # AI 接手索引
-└── skills/work-life-companion/
+├── AGENTS.md / CLAUDE.md    # AI 接手索引
+├── skills/                  # 四个 Skill + 索引
+└── examples/day13-starter-pack/
 ```
 
 ## 隐私

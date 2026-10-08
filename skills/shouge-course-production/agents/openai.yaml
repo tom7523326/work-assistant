@@ -1,0 +1,4 @@
+interface:
+  display_name: "寿哥课程视频制作"
+  short_description: "沿用Day13流程，逐步完成课程设计、课件、口播、成片与发布素材"
+  default_prompt: "使用 $shouge-course-production 按Day13流程开始Day14，先完成课程任务卡和思维导图。"

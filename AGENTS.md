@@ -13,6 +13,19 @@
 6. 数据/12_待办.json（回答待办问题时）
 ```
 
+## Skill 统一入口
+
+本工作区的技能统一放在 [skills/](skills/README.md)。遇到口播稿、整期课程制作、待办协作或技能创建任务，先读 [技能目录](skills/README.md) 或 [机器可读索引](skills/skills.json)，再进入匹配的 SKILL.md。
+
+| Skill | 什么时候用 |
+|---|---|
+| [shouge-spoken-script](skills/shouge-spoken-script/SKILL.md) | 写、改、精简课程口播 |
+| [shouge-course-production](skills/shouge-course-production/SKILL.md) | 按一套固定流程做整期课程视频 |
+| [work-life-companion](skills/work-life-companion/SKILL.md) | 待办、个人资料、工作/生活协作 |
+| [skill-creator-prod](skills/skill-creator-prod/SKILL.md) | 创建或改进技能（第三方框架，Apache-2.0） |
+
+跨 agent 读取不依赖特定工具的调用语法，直接按路径读文件即可。入口说明另见 [CLAUDE.md](CLAUDE.md)。
+
 ## 记忆分层
 
 ```
@@ -31,6 +44,8 @@ L0 Raw       → 你自己的原始材料目录（本开源包不含）
 | `数据备份.py` | `safe_load` / `safe_save` / `atomic_update` |
 | `通知.py` + `launchd/` | 定时提醒 + 菜单栏自启 |
 | `启动任务看板.command` | 双击启动（推荐） |
+| `build_todo.py` | 生成网页看板 `今日待办.html`（工作/生活/财务分区筛选） |
+| `examples/day13-starter-pack/` | 课程配套示例：起点/终点页面 + 样例 CSV + 跟做提示词 |
 
 ## 给接手 AI 的硬约束
 

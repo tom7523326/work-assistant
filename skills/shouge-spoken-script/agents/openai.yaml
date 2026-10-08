@@ -1,0 +1,7 @@
+interface:
+  display_name: "寿哥口语逐字稿"
+  short_description: "基于前十二期成片的口语习惯，为寿哥生成和润色自然可读的短视频与课程逐字稿"
+  default_prompt: "使用 $shouge-spoken-script，按寿哥前十二期成片的口语风格，根据我的主题和素材写一份可直接朗读的逐字稿。"
+
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-10-08T19:16:30+08:00",
+  "canonical_library": "skills/",
+  "path_resolution": "所有entry_path相对于本文件所在目录；不依赖特定Mac绝对路径。",
+  "skills": [
+    {
+      "id": "shouge-spoken-script",
+      "display_name": "寿哥口语逐字稿",
+      "entry_path": "shouge-spoken-script/SKILL.md",
+      "frontmatter_name": "shouge-spoken-script",
+      "use_for": [
+        "写改口播逐字稿",
+        "模仿本人前12期自然讲解"
+      ],
+      "codex_invocation": "$shouge-spoken-script"
+    },
+    {
+      "id": "shouge-course-production",
+      "display_name": "寿哥课程视频制作",
+      "entry_path": "shouge-course-production/SKILL.md",
+      "frontmatter_name": "shouge-course-production",
+      "use_for": [
+        "按Day13流程做Day14/后续整课",
+        "接续课程制作步骤"
+      ],
+      "depends_on": [
+        "shouge-spoken-script"
+      ],
+      "codex_invocation": "$shouge-course-production"
+    },
+    {
+      "id": "work-life-companion",
+      "display_name": "工作与生活协作",
+      "entry_path": "work-life-companion/SKILL.md",
+      "frontmatter_name": "work-life-companion",
+      "use_for": [
+        "待办与个人资料",
+        "工作/生活跨领域协作"
+      ],
+      "codex_invocation": null
+    },
+    {
+      "id": "skill-creator-prod",
+      "display_name": "Skill Creator 导入版",
+      "entry_path": "skill-creator-prod/SKILL.md",
+      "frontmatter_name": "skill-creator",
+      "use_for": [
+        "按路径参考已导入的Manus技能创建框架"
+      ],
+      "codex_invocation": null,
+      "note": "原名保留，与Codex系统自带skill-creator分别识别。"
+    }
+  ]
+}

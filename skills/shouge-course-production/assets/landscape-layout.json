@@ -1,0 +1,32 @@
+{
+  "version": "2026-10-08_douyin_left_avatar",
+  "canvas": {
+    "width": 1920,
+    "height": 1080,
+    "aspect_ratio": "16:9"
+  },
+  "avatar": {
+    "position": "lower_left_raised",
+    "x": 72,
+    "y": 790,
+    "diameter": 235,
+    "mask": "circle",
+    "fill_circle": true,
+    "rim_same_center": true,
+    "consistent_across_shots": true
+  },
+  "platform_review": {
+    "required": true,
+    "states": [
+      "手机竖屏常规播放",
+      "横屏全屏",
+      "账号头像及互动控件显示"
+    ],
+    "passed": false,
+    "note": "坐标为试片初值；依据用户截图避开右侧控件，不是抖音官方通用安全区。"
+  },
+  "subtitle": {
+    "position": "bottom_center",
+    "avoid_avatar_overlap": true
+  }
+}

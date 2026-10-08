@@ -10,7 +10,7 @@
 import json
 from pathlib import Path
 
-p = Path('${WORK_ASSISTANT_ROOT}/数据/12_待办.json')
+p = Path('数据/12_待办.json')  # 相对工作区根目录运行
 d = json.loads(p.read_text(encoding='utf-8'))
 
 existing = [int(t["id"][1:]) for t in d["待办"] if t["id"].startswith("T")]
@@ -93,7 +93,7 @@ p.write_text(json.dumps(d, ensure_ascii=False, indent=2), encoding='utf-8')
 ### Step 4: 双刷看板
 
 ```bash
-cd "${WORK_ASSISTANT_ROOT}" && python3 build_todo.py && python3 build_index.py
+cd "$WORK_ASSISTANT_ROOT" && python3 build_todo.py
 ```
 
 ### Step 5: 简短确认

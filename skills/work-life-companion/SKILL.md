@@ -79,7 +79,6 @@ python3 -c "import json; d=json.load(open('数据/12_待办.json')); ..."
 ├── 财务/工作/投资/              ← L0 原始材料
 ├── *.html                       ← 看板（呈现层）
 ├── build_todo.py                ← 待办看板渲染
-├── build_index.py               ← 主驾驶舱渲染
 └── build_contacts.py            ← 人脉档案渲染
 ```
 
@@ -93,14 +92,14 @@ python3 -c "import json; d=json.load(open('数据/12_待办.json')); ..."
 
 1. 读 `数据/12_待办.json` 找最大 ID + 1
 2. 用 Python + UTF-8 写 JSON（**绝不直接用 echo 或重定向**）
-3. 调用 `python3 build_todo.py && python3 build_index.py` 双刷
+3. 调用 `python3 build_todo.py` 刷新看板
 4. 简短确认（不要长篇总结刚做的事）
 
 ### 归档已完成事项
 
 ```python
 # 找到 task → 改 status 为 done → 加 _completed_at + _完成备注
-# 重新跑 build_todo.py + build_index.py
+# 重新跑 build_todo.py
 ```
 
 **真实完成记录**：`_完成备注` 必须有具体细节（不要写"已完成"），用户复盘时要能看到"做了什么"。
